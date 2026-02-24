@@ -28,5 +28,5 @@ func main() {
 	}
 	log.Println("Server Statred!")
 	//r.Run()
-	r.Run("9000")
+	r.Run(":9000")
 }
