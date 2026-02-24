@@ -9,15 +9,15 @@ import (
 )
 
 func main() {
-	service := NewUserService()
-	handler := NewHandler(service)
-	r := mux.NewRouter()
+	service := NewUserService()    // handles business logic
+	handler := NewHandler(service) // handles at the http layer
+	r := mux.NewRouter()           //creates a new HTTP request router
 
-	r.HandleFunc("/users", handler.GetUsers).Methods("GET")
-	r.HandleFunc("/users/{id}", handler.GetUser).Methods("GET")
-	r.HandleFunc("/users", handler.CreateUser).Methods("POST")
-	r.HandleFunc("/users/{id}", handler.UpdateUser).Methods("PUT")
-	r.HandleFunc("/users/{id}", handler.DeleteUser).Methods("DELETE")
+	r.HandleFunc("/users", handler.GetUsers).Methods("GET")           // get method for all users
+	r.HandleFunc("/users/{id}", handler.GetUser).Methods("GET")       // get method for specific user
+	r.HandleFunc("/users", handler.CreateUser).Methods("POST")        // put method to create new user
+	r.HandleFunc("/users/{id}", handler.UpdateUser).Methods("PUT")    // put method to update specific user
+	r.HandleFunc("/users/{id}", handler.DeleteUser).Methods("DELETE") // delete method to delete specific user
 
 	// Register middlewares
 	r.Use(recoveryMiddleware)

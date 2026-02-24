@@ -1,6 +1,7 @@
 package main
 
 // business logic layer
+
 import (
 	"errors"
 	"sync"
@@ -8,10 +9,12 @@ import (
 
 type UserService struct {
 	users  map[int]User
-	nextID int
-	mu     sync.Mutex
+	nextID int        // auto increment for ids
+	mu     sync.Mutex // Only one goroutine modifies the map at a time
 }
 
+// constructor function
+// userservice as pointer in oder not to copy mutex
 func NewUserService() *UserService {
 	return &UserService{
 		users:  make(map[int]User),
