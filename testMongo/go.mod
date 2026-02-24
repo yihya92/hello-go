@@ -1,4 +1,4 @@
-module github.com/yihya92/hello-go
+module testMongo
 
 go 1.25.0
 

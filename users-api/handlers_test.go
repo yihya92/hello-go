@@ -29,8 +29,8 @@ func TestCreateUserHandler(t *testing.T) {
 	router, _ := setupTestRouter()
 
 	payload := map[string]string{
-		"name":  "Alice",
-		"email": "alice@example.com",
+		"name":  "",
+		"email": "",
 	}
 
 	body, _ := json.Marshal(payload)

@@ -1,16 +1,24 @@
 ### Create User
-POST http://localhost:8080/users
+POST http://localhost:9001/users
 Content-Type: application/json
 
 {
-"name": "George",
-  "email": "gkfoury@africell.com"
+"name": "Yihya",
+  "email": "ydalloul@africell.com"
 }
 ### Get All Users
-GET http://localhost:8080/users
+GET http://localhost:9001/users
 
 ### Get User By ID
-GET http://localhost:8080/users/3
-
+GET http://localhost:8080/users/4
 ### Delete User
 DELETE http://localhost:8080/users/1
+
+### Update User
+PUT http://localhost:9001/users/8
+Content-Type: application/json
+
+{
+  "name": "Ahmad",
+  "email": "alice.new@example.com"
+}
