@@ -1,0 +1,69 @@
+### Base URL
+@baseUrl = http://localhost:9000/users
+
+########################################
+### Create User
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+  "name": "Yihya",
+  "email": "yihya@email.com",
+  "age": 33
+}
+
+########################################
+### Create Another User
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+  "name": "George",
+  "email": "george@email.com",
+  "age": 30
+}
+
+########################################
+### Insert Multiple Users
+POST {{baseUrl}}/multiple
+Content-Type: application/json
+
+[
+  {
+    "name": "Maher",
+    "email": "maher@email.com",
+    "age": 45
+  },
+  {
+    "name": "Mohamad",
+    "email": "Mohamad@email.com",
+    "age": 28
+  }
+]
+
+########################################
+### Get All Users
+GET {{baseUrl}}/
+
+########################################
+### Get User By ID (Replace with real Mongo ID)
+GET {{baseUrl}}/4
+
+########################################
+### Update User (Replace ID)
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "name": "Yihya Dalloul",
+  "email": "yihyadalloul@email.com",
+  "age": 33
+}
+
+########################################
+### Delete User By ID (Replace ID)
+DELETE {{baseUrl}}/2
+
+########################################
+### Delete All Users
+DELETE {{baseUrl}}/

@@ -19,9 +19,8 @@ func main() {
 	{
 		users.POST("/", controllers.CreateUser)
 		users.GET("/", controllers.ListAllUsers)
+		users.GET("/:id", controllers.FindUserById)
 		users.PUT("/:id", controllers.UpdateUser)
-		users.GET("/one/:name", controllers.FindUserByName)
-		users.GET("/all/:name", controllers.FindAllUsersByName)
 		users.DELETE("/:id", controllers.DeleteUser)
 		users.DELETE("/", controllers.DeleteAllUsers)
 		users.POST("/multiple", controllers.InsertMultipleUsers)

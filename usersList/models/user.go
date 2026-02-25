@@ -6,94 +6,103 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
-	ID    primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Name  string             `json:"name" bson:"name"`
-	Email string             `json:"email" bson:"email"`
-	Age   int                `json:"age" bson:"age"`
+	ID    int64  `json:"id" bson:"id"`
+	Name  string `json:"name" bson:"name"`
+	Email string `json:"email" bson:"email"`
+	Age   int    `json:"age" bson:"age"`
 }
 
 func InsertUser(user User) error {
 	collection := mongoClient.Database(db).Collection(collName)
-	inserted, err := collection.InsertOne(context.TODO(), user)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Inserted a record with id: ", inserted.InsertedID)
+
+	// Count documents
+	count, _ := collection.CountDocuments(context.TODO(), bson.M{})
+
+	user.ID = count + 1
+
+	_, err := collection.InsertOne(context.TODO(), user)
 	return err
 }
 
 func InsertManyUsers(users []User) error {
-	newUsers := make([]interface{}, len(users))
-	for i, user := range users {
-		newUsers[i] = user
-	}
 	collection := mongoClient.Database(db).Collection(collName)
-	result, err := collection.InsertMany(context.TODO(), newUsers)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(result)
-	return err
-}
 
-func FindUser(username string) User {
-	var result User
-	filter := bson.D{{Key: "user", Value: username}}
-	collection := mongoClient.Database(db).Collection(collName)
-	err := collection.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return result
-}
-
-func FindAllUsers(username string) []User {
-	var results []User
-	filter := bson.D{{Key: "user", Value: username}}
-	collection := mongoClient.Database(db).Collection(collName)
-	cursor, err := collection.Find(context.TODO(), filter)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = cursor.All(context.TODO(), &results)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return results
-}
-
-func UpdateUser(userID string, user User) error {
-	id, err := primitive.ObjectIDFromHex(userID)
+	count, err := collection.CountDocuments(context.TODO(), bson.M{})
 	if err != nil {
 		return err
 	}
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"name": user.Name, "age": user.Age}}
+
+	var documents []interface{}
+
+	for i := range users {
+		users[i].ID = count + int64(i) + 1
+		documents = append(documents, users[i])
+	}
+
+	_, err = collection.InsertMany(context.TODO(), documents)
+	return err
+}
+
+func GetUserByID(id int) (User, error) {
 	collection := mongoClient.Database(db).Collection(collName)
+
+	var user User
+
+	err := collection.FindOne(
+		context.TODO(),
+		bson.M{"id": id},
+	).Decode(&user)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func UpdateUser(id int64, user User) error {
+	collection := mongoClient.Database(db).Collection(collName)
+
+	filter := bson.M{"id": id}
+
+	update := bson.M{
+		"$set": bson.M{
+			"name":  user.Name,
+			"email": user.Email,
+			"age":   user.Age,
+		},
+	}
+
 	result, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return err
 	}
-	fmt.Println("updated a record: ", result)
+
+	if result.MatchedCount == 0 {
+		return fmt.Errorf("user not found")
+	}
+
 	return nil
 }
 
-func DeleteUser(userID string) error {
-	id, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return err
-	}
-	filter := bson.M{"_id": id}
+func DeleteUser(userID int64) error {
 	collection := mongoClient.Database(db).Collection(collName)
+
+	filter := bson.M{"id": userID}
+
 	result, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		return err
 	}
-	fmt.Println("Deleted a record: ", result)
+
+	if result.DeletedCount == 0 {
+		return fmt.Errorf("user not found")
+	}
+
+	fmt.Println("Deleted record count:", result.DeletedCount)
 	return nil
 }
 
