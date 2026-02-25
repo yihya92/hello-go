@@ -46,11 +46,11 @@ Content-Type: application/json
 GET {{baseUrl}}/
 
 ########################################
-### Get User By ID (Replace with real Mongo ID)
+### Get User By ID 
 GET {{baseUrl}}/4
 
 ########################################
-### Update User (Replace ID)
+### Update User 
 PUT {{baseUrl}}/1
 Content-Type: application/json
 
@@ -61,7 +61,7 @@ Content-Type: application/json
 }
 
 ########################################
-### Delete User By ID (Replace ID)
+### Delete User By ID 
 DELETE {{baseUrl}}/2
 
 ########################################
